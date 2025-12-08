@@ -1,10 +1,11 @@
 import numpy as np
 import soundfile as sf
 
+
 class AudioMixer:
     """Класс для работы со смешением аудиофайлов"""
     
-    def read_audio_file(self, file_path)-> tuple[np.ndarray, int]:
+    def read_audio_file(self, file_path) -> tuple[np.ndarray, int]:
         """Чтение аудиофайла и возврат данных и частоты дискретизации"""
         try:
             data, samplerate = sf.read(file_path)
@@ -17,10 +18,9 @@ class AudioMixer:
             print(f"Ошибка при чтении файла {file_path}: {e}")
             return None, None
 
-    def mix_audio(self, audio1, audio2)-> np.ndarray:
+    def mix_audio(self, audio1, audio2) -> np.ndarray:
         """
-        Смешивает два аудиосигнала  усреднением
-
+        Смешивает два аудиосигнала усреднением
         """
         min_length = min(len(audio1), len(audio2))
         audio1 = audio1[:min_length]
@@ -28,7 +28,6 @@ class AudioMixer:
     
         mixed_audio = (audio1 + audio2) / 2
         
-
         max_val = np.max(np.abs(mixed_audio))
         if max_val > 1.0:
             mixed_audio = mixed_audio / max_val
@@ -57,7 +56,6 @@ class AudioMixer:
             if len(audio2.shape) == 2:
                 audio2 = np.mean(audio2, axis=1)
         
-
         print("\nСмешивание аудио...")
         mixed_audio = self.mix_audio(audio1, audio2)
         
