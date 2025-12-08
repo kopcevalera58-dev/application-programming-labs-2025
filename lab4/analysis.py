@@ -2,12 +2,13 @@ import argparse
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import soundfile as sf
 
 
 def get_args() -> argparse.Namespace:
     """Парсинг аргументов командной строки"""
     parser = argparse.ArgumentParser()
-    parser.add_argument('--annotation', type=str, default='ann.csv', 
+    parser.add_argument('--annotation', type=str, default='ann.csv',
                        help='Путь к CSV файлу с аннотацией')
     parser.add_argument('--output_df', type=str, default='audio_analysis.csv',
                        help='Путь для сохранения DataFrame')
@@ -16,15 +17,13 @@ def get_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-import soundfile as sf
-
 def build_dataframe(annotation_file: str) -> pd.DataFrame:
     df_annotation = pd.read_csv(annotation_file)
     df = pd.DataFrame({
         'абсолютный_путь': df_annotation['Абсолютный путь'],
         'относительный_путь': df_annotation['Относительный путь']
     })
-    
+
     amplitudes = []
     for audio_path in df['абсолютный_путь']:
         try:
@@ -33,28 +32,29 @@ def build_dataframe(annotation_file: str) -> pd.DataFrame:
             amplitudes.append(mean_amp)
         except Exception:
             amplitudes.append(0.0)
-    
+
     df['средняя_амплитуда'] = amplitudes
     return df
 
 
-def sort_dataframe(df: pd.DataFrame, column: str = 'средняя_амплитуда', 
+def sort_dataframe(df: pd.DataFrame, column: str = 'средняя_амплитуда',
                    ascending: bool = True) -> pd.DataFrame:
     """Сортировка DataFrame по указанной колонке"""
     return df.sort_values(column, ascending=ascending).reset_index(drop=True)
 
 
-def filter_dataframe(df: pd.DataFrame, column: str = 'средняя_амплитуда', 
+def filter_dataframe(df: pd.DataFrame, column: str = 'средняя_амплитуда',
                      min_value: float = None, max_value: float = None) -> pd.DataFrame:
     """Фильтрация DataFrame по диапазону значений"""
     filtered_df = df.copy()
-    
+
     if min_value is not None:
         filtered_df = filtered_df[filtered_df[column] >= min_value]
     if max_value is not None:
         filtered_df = filtered_df[filtered_df[column] <= max_value]
-    
+
     return filtered_df.reset_index(drop=True)
+
 
 def save_dataframe(df: pd.DataFrame, filepath: str) -> None:
     """Сохранение DataFrame в файл"""
@@ -65,14 +65,14 @@ def save_dataframe(df: pd.DataFrame, filepath: str) -> None:
 def plot_amplitudes(df: pd.DataFrame, output_path: str) -> None:
     """Построение графика средней амплитуды"""
     plt.figure(figsize=(12, 6))
-    
+
     plt.plot(range(len(df)), df['средняя_амплитуда'])
-    
+
     plt.title('Средняя амплитуда аудиофайлов (отсортированные)', fontsize=14)
     plt.xlabel('Номер аудиофайла в отсортированном списке', fontsize=12)
     plt.ylabel('Средняя амплитуда', fontsize=12)
     plt.grid(True)
-    
+
     plt.tight_layout()
     plt.savefig(output_path, dpi=300)
     plt.show()
