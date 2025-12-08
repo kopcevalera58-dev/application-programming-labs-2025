@@ -2,13 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
+
 class AudioVisualizer:
     """Класс для визуализации аудиоданных"""
     
-    def create_comparison_plot(self, original1, original2, mixed, samplerate, output_path)-> None:
+    def create_comparison_plot(self, original1, original2, mixed, samplerate, output_path) -> None:
         """Визуализация исходных аудио и результата смешения"""
         time1 = np.arange(len(original1)) / samplerate
-        time2 = np.arange(len(original2)) / samplerate  
+        time2 = np.arange(len(original2)) / samplerate
         time_mixed = np.arange(len(mixed)) / samplerate
         
         plt.figure(figsize=(15, 10))
@@ -30,7 +31,7 @@ class AudioVisualizer:
         
         plt.show()
 
-    def _plot_audio_channel(self, time, audio, color, title)-> None:
+    def _plot_audio_channel(self, time, audio, color, title) -> None:
         """Вспомогательный метод для построения графика аудиоканала"""
         if len(audio.shape) == 1:
             plt.plot(time, audio, color=color, alpha=0.7)
