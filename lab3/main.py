@@ -2,10 +2,11 @@ import argparse
 from audio_mixer import AudioMixer
 from visual import AudioVisualizer
 
-def get_args()-> argparse.Namespace:
+
+def get_args() -> argparse.Namespace:
     """Парсинг аргументов командной строки"""
     parser = argparse.ArgumentParser(description='Смешение двух аудиофайлов')
-    parser.add_argument('--input1', type=str, required=True, 
+    parser.add_argument('--input1', type=str, required=True,
                        help='Путь к первому аудиофайлу')
     parser.add_argument('--input2', type=str, required=True,
                        help='Путь ко второму аудиофайлу')
@@ -13,7 +14,8 @@ def get_args()-> argparse.Namespace:
                        help='Путь для сохранения результата')
     return parser.parse_args()
 
-def main()-> None:
+
+def main() -> None:
     """Основная функция программы"""
     args = get_args()
     
@@ -25,8 +27,8 @@ def main()-> None:
     mixer = AudioMixer()
     
     success, result = mixer.mix_audio_files(
-        args.input1, 
-        args.input2, 
+        args.input1,
+        args.input2,
         args.output
     )
     
@@ -37,11 +39,12 @@ def main()-> None:
     visualizer = AudioVisualizer()
     visualizer.create_comparison_plot(
         result['audio1'],
-        result['audio2'], 
+        result['audio2'],
         result['mixed_audio'],
         result['samplerate'],
         args.output
     )
     
+
 if __name__ == "__main__":
     main()
